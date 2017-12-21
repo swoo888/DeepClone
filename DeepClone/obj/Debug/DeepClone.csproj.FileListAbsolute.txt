@@ -1,0 +1,5 @@
+C:\Projects\DeepClone\DeepClone\bin\Debug\DeepClone.exe.config
+C:\Projects\DeepClone\DeepClone\bin\Debug\DeepClone.exe
+C:\Projects\DeepClone\DeepClone\bin\Debug\DeepClone.pdb
+C:\Projects\DeepClone\DeepClone\obj\Debug\DeepClone.exe
+C:\Projects\DeepClone\DeepClone\obj\Debug\DeepClone.pdb
