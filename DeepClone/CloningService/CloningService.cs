@@ -58,6 +58,8 @@ namespace DeepClone.CloningService
 
         private CloningMode GetCloneMode(IEnumerable<CloneableAttribute> attrs)
         {
+            if (attrs.Count() <= 0)
+                return CloningMode.Shallow;
             if (attrs.Any(a => a.Mode == CloningMode.Ignore))
                 return CloningMode.Ignore;
             if (attrs.Any(a => a.Mode == CloningMode.Shallow))
