@@ -43,8 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloningService\ArrayCloner.cs" />
+    <Compile Include="CloningService\GeneralClassCloner.cs" />
+    <Compile Include="CloningService\DeepCloneFactory.cs" />
+    <Compile Include="CloningService\ICloningFactory.cs" />
     <Compile Include="CloningService\CloningAttributes.cs" />
-    <Compile Include="CloningService\CloningService.cs" />
+    <Compile Include="CloningService\DeepCloneManager.cs" />
+    <Compile Include="CloningService\ICloningManager.cs" />
+    <Compile Include="CloningService\IDeepCloner.cs" />
+    <Compile Include="CloningService\ListCloner.cs" />
+    <Compile Include="CloningService\StringCloner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\TestCloneX.cs" />

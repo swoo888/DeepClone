@@ -8,6 +8,18 @@ namespace DeepClone.Tests
 {
     public class CloningServiceTest
     {
+        private ICloningFactory factory;
+        private ICloningManager cloner;
+        public CloningServiceTest()
+        {
+            factory = new DeepCloneFactory();
+            cloner = new DeepCloneManager(factory);
+            factory.RegisterCloners(new StringCloner());
+            factory.RegisterCloners(new ArrayCloner());
+            factory.RegisterCloners(new ListCloner());
+            factory.RegisterCloners(new GeneralClassCloner());
+        }
+
         public class BasicTest
         {
             public int I;
@@ -57,7 +69,7 @@ namespace DeepClone.Tests
                 1 + (Left?.TotalNodeCount ?? 0) + (Right?.TotalNodeCount ?? 0);
         }
 
-        public ICloningService Cloner = new CloningService.AttributeBaseCloner();
+
         public Action[] AllTests => new Action[] {
             RunBasicTest1,
             RunStructTest1,
@@ -93,7 +105,7 @@ namespace DeepClone.Tests
         public void RunBasicTest1()
         {
             var s = new BasicTest() { I = 1, S = "2", Ignored = "3", ShallowObj = new object() };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(s.CS == c.CS);
             Assert(c.Ignored == null);
@@ -103,7 +115,7 @@ namespace DeepClone.Tests
         public void RunStructTest1()
         {
             var s = new StructTest(1, "2") { Ignored = "3" };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s.Computed == c.Computed);
             Assert(c.Ignored == null);
         }
@@ -117,7 +129,7 @@ namespace DeepClone.Tests
                 D = 3,
                 testSS = new StructTest(3, "4"),
             };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(s.CS == c.CS);
         }
@@ -132,7 +144,7 @@ namespace DeepClone.Tests
                 },
                 Right = new Node()
             };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(s.TotalNodeCount == c.TotalNodeCount);
         }
@@ -141,7 +153,7 @@ namespace DeepClone.Tests
         {
             var s = new Node();
             s.Left = s;
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(null == c.Right);
 
@@ -160,7 +172,7 @@ namespace DeepClone.Tests
                 Right = new Node()
             };
             var s = new[] { n, n };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(s.Sum(n1 => n1.TotalNodeCount) == c.Sum(n1 => n1.TotalNodeCount));
             Assert(c[0] == c[1]);
@@ -177,7 +189,7 @@ namespace DeepClone.Tests
                 Right = new Node()
             };
             var s = new List<Node>() { n, n };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(s.Sum(n1 => n1.TotalNodeCount) == c.Sum(n1 => n1.TotalNodeCount));
             Assert(c[0] == c[1]);
@@ -186,7 +198,7 @@ namespace DeepClone.Tests
         public void RunArrayTest2()
         {
             var s = new[] { new[] { 1, 2, 3 }, new[] { 4, 5 } };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(15 == c.SelectMany(a => a).Sum());
         }
@@ -194,7 +206,7 @@ namespace DeepClone.Tests
         public void RunCollectionTest2()
         {
             var s = new List<List<int>> { new List<int> { 1, 2, 3 }, new List<int> { 4, 5 } };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(15 == c.SelectMany(a => a).Sum());
         }
@@ -205,7 +217,7 @@ namespace DeepClone.Tests
                 new List<int[]> {new [] {1}},
                 new List<int[]> {new [] {2, 3}},
             };
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(6 == c.SelectMany(a => a.SelectMany(b => b)).Sum());
         }
@@ -218,7 +230,7 @@ namespace DeepClone.Tests
             l.Add(n);
             var s = new object[] { null, l, n };
             s[0] = s;
-            var c = Cloner.Clone(s);
+            var c = cloner.Clone(s);
             Assert(s != c);
             Assert(c[0] == c);
             var cl = (List<Node>)c[1];
@@ -232,7 +244,8 @@ namespace DeepClone.Tests
         public void RunPerformanceTest()
         {
             Func<int, Node> makeTree = null;
-            makeTree = depth => {
+            makeTree = depth =>
+            {
                 if (depth == 0)
                     return null;
                 return new Node
@@ -245,8 +258,9 @@ namespace DeepClone.Tests
             for (var i = 10; i <= 20; i++)
             {
                 var root = makeTree(i);
-                Measure($"Cloning {root.TotalNodeCount} nodes", () => {
-                    var copy = Cloner.Clone(root);
+                Measure($"Cloning {root.TotalNodeCount} nodes", () =>
+                {
+                    var copy = cloner.Clone(root);
                     Assert(root != copy);
                 });
             }
