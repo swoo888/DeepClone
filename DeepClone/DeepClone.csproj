@@ -55,7 +55,7 @@
     <Compile Include="CloningService\StringCloner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\TestCloneX.cs" />
+    <Compile Include="Tests\TestDeepCloner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
